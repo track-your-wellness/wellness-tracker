@@ -1,0 +1,1747 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Wellness Tracker</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=Caveat:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --baby-pink: #FFB6C1;
+            --soft-pink: #FFC9D4;
+            --pale-pink: #FFE5EC;
+            --cream: #FFF8F0;
+            --lavender: #E5D9F2;
+            --mint: #D4F1F4;
+            --peach: #FFD6BA;
+            --text-dark: #4A4A4A;
+            --text-light: #8B8B8B;
+            --white: #FFFFFF;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: linear-gradient(135deg, var(--pale-pink) 0%, var(--lavender) 50%, var(--mint) 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            overflow-x: hidden;
+        }
+
+        /* Decorative Background Elements */
+        .bg-decoration {
+            position: fixed;
+            border-radius: 50%;
+            opacity: 0.3;
+            z-index: 0;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .bg-decoration:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--baby-pink), transparent);
+            top: -100px;
+            right: -100px;
+        }
+
+        .bg-decoration:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, var(--lavender), transparent);
+            bottom: -150px;
+            left: -150px;
+            animation-delay: -5s;
+        }
+
+        .bg-decoration:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            background: radial-gradient(circle, var(--mint), transparent);
+            top: 40%;
+            right: 10%;
+            animation-delay: -10s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0) scale(1);
+            }
+            33% {
+                transform: translate(30px, -30px) scale(1.1);
+            }
+            66% {
+                transform: translate(-20px, 20px) scale(0.9);
+            }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Login Screen */
+        .login-screen {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .login-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 40px;
+            padding: 60px 50px;
+            box-shadow: 0 20px 60px rgba(255, 182, 193, 0.4);
+            max-width: 450px;
+            width: 100%;
+            text-align: center;
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-card h1 {
+            font-family: 'Caveat', cursive;
+            font-size: 3.5rem;
+            color: var(--baby-pink);
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .login-card p {
+            color: var(--text-light);
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--soft-pink);
+            border-radius: 20px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--baby-pink);
+            box-shadow: 0 0 0 4px rgba(255, 182, 193, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--baby-pink), var(--soft-pink));
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(255, 182, 193, 0.4);
+        }
+
+        /* Main App */
+        .app-container {
+            display: none;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 25px 35px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(255, 182, 193, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            font-family: 'Caveat', cursive;
+            font-size: 2.5rem;
+            color: var(--baby-pink);
+            font-weight: 600;
+        }
+
+        .header-info {
+            text-align: right;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1.1rem;
+        }
+
+        .logout-btn {
+            background: none;
+            border: 2px solid var(--baby-pink);
+            color: var(--baby-pink);
+            padding: 8px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            margin-top: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            background: var(--baby-pink);
+            color: white;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 18px 30px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 3px solid transparent;
+            border-radius: 25px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+            box-shadow: 0 5px 20px rgba(255, 182, 193, 0.15);
+        }
+
+        .tab-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 30px rgba(255, 182, 193, 0.25);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--baby-pink), var(--soft-pink));
+            color: white;
+            border-color: var(--baby-pink);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 30px;
+            padding: 35px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(255, 182, 193, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(255, 182, 193, 0.3);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid var(--pale-pink);
+        }
+
+        .card-header h2 {
+            font-size: 1.8rem;
+            color: var(--baby-pink);
+            font-weight: 600;
+        }
+
+        .date-selector {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .date-selector input {
+            padding: 12px 20px;
+            border: 2px solid var(--soft-pink);
+            border-radius: 20px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            color: var(--text-dark);
+            background: var(--white);
+        }
+
+        .date-selector input:focus {
+            outline: none;
+            border-color: var(--baby-pink);
+        }
+
+        /* Form Groups */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--soft-pink);
+            border-radius: 20px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--white);
+            color: var(--text-dark);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--baby-pink);
+            box-shadow: 0 0 0 4px rgba(255, 182, 193, 0.1);
+        }
+
+        /* Toggle Switch (Compact) */
+        .toggle-group {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 0;
+        }
+
+        .toggle-group > label:not(.toggle-group > label.switch {
+            flex: 0 0 auto;
+            margin: 0;
+        }
+
+        /* Smaller switch to look like (ㅇ  ) / (  ㅇ) */
+        .switch {
+            --switch-w: 44px;
+            --switch-h: 24px;
+            --knob: 18px;
+            --pad: 3px;
+
+            position: relative;
+            display: inline-block;
+            width: var(--switch-w);
+            height: var(--switch-h);
+            flex: 0 0 auto;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: var(--pale-pink);
+            transition: 0.25s;
+            border-radius: 999px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: var(--knob);
+            width: var(--knob);
+            left: var(--pad);
+            bottom: var(--pad);
+            background-color: white;
+            transition: 0.25s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background: linear-gradient(135deg, var(--baby-pink), var(--soft-pink));
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(calc(var(--switch-w) - var(--knob) - (var(--pad) * 2)));
+        }
+
+        /* Scale Selector */
+        .scale-selector {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .scale-btn {
+            flex: 1;
+            min-width: 50px;
+            padding: 15px;
+            border: 2px solid var(--soft-pink);
+            background: white;
+            border-radius: 15px;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: var(--text-dark);
+        }
+
+        .scale-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 182, 193, 0.2);
+        }
+
+        .scale-btn.active {
+            background: linear-gradient(135deg, var(--baby-pink), var(--soft-pink));
+            color: white;
+            border-color: var(--baby-pink);
+        }
+
+        /* Save Button */
+        .save-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, var(--baby-pink), var(--soft-pink));
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Quicksand', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 182, 193, 0.3);
+            margin-top: 10px;
+        }
+
+        .save-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 182, 193, 0.4);
+        }
+
+        /* History View */
+        .history-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .history-card {
+            background: linear-gradient(135deg, rgba(255, 230, 236, 0.6), rgba(229, 217, 242, 0.6));
+            backdrop-filter: blur(10px);
+            border-radius: 25px;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .history-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 20px rgba(255, 182, 193, 0.2);
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(255, 182, 193, 0.3);
+        }
+
+        .history-date {
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--baby-pink);
+        }
+
+        .delete-btn {
+            background: none;
+            border: 2px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 6px 15px;
+            border-radius: 15px;
+            cursor: pointer;
+            font-family: 'Quicksand', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .history-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .history-item {
+            background: white;
+            padding: 12px 18px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(255, 182, 193, 0.1);
+        }
+
+        .history-label {
+            font-weight: 600;
+            color: var(--baby-pink);
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .history-value {
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state h3 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--baby-pink);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .login-card {
+                padding: 40px 30px;
+            }
+
+            .login-card h1 {
+                font-size: 2.5rem;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 15px;
+            }
+
+            .header-info {
+                text-align: center;
+            }
+
+            .tab-nav {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                width: 100%;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 25px 20px;
+            }
+
+            .card-header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .date-selector {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .scale-selector {
+                justify-content: center;
+            }
+
+            .history-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    
+        /* ---- FIX: Force compact toggle width (prevents full-width stretching) ---- */
+        .toggle-group {
+            justify-content: space-between;
+        }
+        .toggle-group > label:first-child {
+            flex: 1 1 auto;
+            margin: 0;
+        }
+        /* Switch label must NEVER grow */
+        .toggle-group > label.switch,
+        .toggle-group .switch {
+            width: var(--switch-w, 44px) !important;
+            min-width: var(--switch-w, 44px) !important;
+            max-width: var(--switch-w, 44px) !important;
+            flex: 0 0 var(--switch-w, 44px) !important;
+            display: inline-block !important;
+            margin: 0 !important;
+        }
+        /* In case a generic label rule overrides display */
+        label.switch { display: inline-block !important; }
+
+</style>
+
+    <!-- ✅ Cloud sync (Firebase) - fill firebaseConfig to enable cross-device login -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+
+</head>
+<body>
+    <!-- Background Decorations -->
+    <div class="bg-decoration"></div>
+    <div class="bg-decoration"></div>
+    <div class="bg-decoration"></div>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-card">
+            <h1>✨ Wellness Diary</h1>
+            <p>당신만의 건강 여정을 시작하세요</p>
+            
+            <!-- Login Form -->
+            <div id="loginForm">
+                <div class="input-group">
+                    <label>이메일</label>
+                    <input type="email" id="loginEmail" placeholder="example@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label>비밀번호</label>
+                    <input type="password" id="loginPassword" placeholder="비밀번호를 입력하세요" required>
+                </div>
+                <button class="btn btn-primary" onclick="login()">로그인</button>
+                <button class="btn btn-primary" onclick="showRegisterForm()" style="margin-top: 15px; background: linear-gradient(135deg, var(--lavender), var(--mint));">회원가입</button>
+            </div>
+
+            <!-- Register Form -->
+            <div id="registerForm" style="display: none;">
+                <div class="input-group">
+                    <label>이름</label>
+                    <input type="text" id="registerName" placeholder="이름을 입력하세요" required>
+                </div>
+                <div class="input-group">
+                    <label>이메일</label>
+                    <input type="email" id="registerEmail" placeholder="example@email.com" required>
+                </div>
+                <div class="input-group">
+                    <label>비밀번호</label>
+                    <input type="password" id="registerPassword" placeholder="비밀번호를 입력하세요 (최소 6자)" required>
+                </div>
+                <div class="input-group">
+                    <label>비밀번호 확인</label>
+                    <input type="password" id="registerPasswordConfirm" placeholder="비밀번호를 다시 입력하세요" required>
+                </div>
+                <button class="btn btn-primary" onclick="register()">회원가입</button>
+                <button class="btn btn-primary" onclick="showLoginForm()" style="margin-top: 15px; background: none; border: 2px solid var(--baby-pink); color: var(--baby-pink);">로그인으로 돌아가기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="appContainer" class="app-container">
+        <div class="container">
+            <div class="header">
+                <h1>🌸 My Wellness</h1>
+                <div class="header-info">
+                    <div class="user-name" id="userName"></div>
+                    <button class="logout-btn" onclick="logout()">로그아웃</button>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab('daily')">📝 일일 기록</button>
+                <button class="tab-btn" onclick="switchTab('wellness')">💖 웰니스 트래커</button>
+                <button class="tab-btn" onclick="switchTab('history')">📊 기록 보기</button>
+                <button class="tab-btn" onclick="switchTab('settings')">⚙️ 설정</button>
+            </div>
+
+            <!-- Daily Log Tab -->
+            <div id="dailyTab" class="tab-content active">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>오늘의 기록</h2>
+                        <div class="date-selector">
+                            <input type="date" id="dailyDate" onchange="loadDailyData()">
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>🏋️ 몸무게 (kg)</label>
+                            <input type="number" id="weight" step="0.1" placeholder="예: 65.5">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>🌅 아침</label>
+                        <textarea id="breakfast" placeholder="먹은 음식을 입력하세요"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>🌞 점심</label>
+                        <textarea id="lunch" placeholder="먹은 음식을 입력하세요"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>🌙 저녁</label>
+                        <textarea id="dinner" placeholder="먹은 음식을 입력하세요"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>🍪 간식</label>
+                        <textarea id="snacks" placeholder="간식을 입력하세요"></textarea>
+                    </div>
+
+                    <div class="toggle-group">
+                        <label>💪 운동 했나요?</label>
+                        <label class="switch">
+                            <input type="checkbox" id="exercise">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="toggle-group">
+                        <label>🍷 술 마셨나요?</label>
+                        <label class="switch">
+                            <input type="checkbox" id="alcohol">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <button class="save-btn" onclick="saveDailyLog()">💾 저장하기</button>
+                </div>
+            </div>
+
+            <!-- Wellness Tracker Tab -->
+            <div id="wellnessTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>웰니스 체크</h2>
+                        <div class="date-selector">
+                            <input type="date" id="wellnessDate" onchange="loadWellnessData()">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>⚡ 오늘의 에너지 레벨</label>
+                        <div class="scale-selector" id="energyScale">
+                            <button class="scale-btn" onclick="selectScale('energy', 1)">1</button>
+                            <button class="scale-btn" onclick="selectScale('energy', 2)">2</button>
+                            <button class="scale-btn" onclick="selectScale('energy', 3)">3</button>
+                            <button class="scale-btn" onclick="selectScale('energy', 4)">4</button>
+                            <button class="scale-btn" onclick="selectScale('energy', 5)">5</button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>💭 에너지 레벨 이유</label>
+                        <textarea id="energyReason" placeholder="예: 생리통, 두통, 피로, 기분 좋음 등"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>😴 수면 점수 (1-10)</label>
+                        <input type="number" id="sleepScore" min="1" max="10" placeholder="1-10 사이 점수">
+                    </div>
+
+                    <div class="form-group">
+                        <label>🍽️ 식욕 레벨</label>
+                        <div class="scale-selector" id="appetiteScale">
+                            <button class="scale-btn" onclick="selectScale('appetite', 1)">1</button>
+                            <button class="scale-btn" onclick="selectScale('appetite', 2)">2</button>
+                            <button class="scale-btn" onclick="selectScale('appetite', 3)">3</button>
+                            <button class="scale-btn" onclick="selectScale('appetite', 4)">4</button>
+                            <button class="scale-btn" onclick="selectScale('appetite', 5)">5</button>
+                        </div>
+                    </div>
+
+                    <div class="toggle-group">
+                        <label>💧 물 많이 마셨나요? (8잔 이상)</label>
+                        <label class="switch">
+                            <input type="checkbox" id="waterIntake">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <button class="save-btn" onclick="saveWellnessLog()">💾 저장하기</button>
+                </div>
+            </div>
+
+            <!-- History Tab -->
+            <div id="historyTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>내 기록 히스토리</h2>
+                        <div class="date-selector">
+                            <select id="filterType" onchange="loadHistory()">
+                                <option value="all">전체 보기</option>
+                                <option value="daily">일일 기록만</option>
+                                <option value="wellness">웰니스만</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="historyContent" class="history-grid"></div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div id="settingsTab" class="tab-content">
+                <div class="card">
+                    <div class="card-header">
+                        <h2>⚙️ 설정</h2>
+                    </div>
+
+                    <div style="margin-bottom: 40px;">
+                        <h3 style="color: var(--baby-pink); font-size: 1.3rem; margin-bottom: 15px;">📋 계정 정보</h3>
+                        <div class="history-item" style="margin-bottom: 10px;">
+                            <div class="history-label">이름</div>
+                            <div class="history-value" id="accountName"></div>
+                        </div>
+                        <div class="history-item">
+                            <div class="history-label">이메일</div>
+                            <div class="history-value" id="accountEmail"></div>
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 40px;">
+                        <h3 style="color: var(--baby-pink); font-size: 1.3rem; margin-bottom: 15px;">📲 기기간 데이터 이동</h3>
+                        <p style="color: var(--text-light); margin-bottom: 18px; line-height: 1.6;">
+                            이 앱은 서버 없이 동작해서 계정/기록이 <strong>기기(브라우저)별</strong>로 저장됩니다.<br>
+                            PC에서 만든 계정을 폰에서도 쓰려면 아래에서 <strong>내보내기 → 폰에서 가져오기</strong>를 해주세요.
+                        </p>
+                        <button class="btn btn-primary" onclick="exportDataToClipboard()" style="margin-top: 0; background: linear-gradient(135deg, var(--lavender), var(--mint));">
+                            📋 내 데이터 복사(내보내기)
+                        </button>
+                        <button class="btn" onclick="importDataFromPrompt()" style="margin-top: 12px; background: none; border: 2px solid var(--baby-pink); color: var(--baby-pink);">
+                            📥 붙여넣기(가져오기)
+                        </button>
+                    </div>
+
+                    <div style="border-top: 2px solid var(--pale-pink); padding-top: 30px;">
+                        <h3 style="color: #ff6b6b; font-size: 1.3rem; margin-bottom: 15px;">🗑️ 위험 구역</h3>
+                        <p style="color: var(--text-light); margin-bottom: 20px; line-height: 1.6;">
+                            계정을 삭제하면 모든 기록이 영구적으로 삭제됩니다. 이 작업은 되돌릴 수 없습니다.
+                        </p>
+                        <button class="delete-btn" onclick="showDeleteAccountModal()" style="width: 100%; padding: 15px; font-size: 1rem;">
+                            계정 삭제하기
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Account Modal -->
+    <div id="deleteAccountModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 1000; align-items: center; justify-content: center;">
+        <div style="background: white; border-radius: 30px; padding: 40px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); animation: slideUp 0.3s ease-out;">
+            <h2 style="color: #ff6b6b; font-size: 1.8rem; margin-bottom: 20px; text-align: center;">⚠️ 계정 삭제</h2>
+            <p style="color: var(--text-dark); margin-bottom: 25px; line-height: 1.6; text-align: center;">
+                정말로 계정을 삭제하시겠습니까?<br>
+                <strong style="color: #ff6b6b;">모든 기록이 영구적으로 삭제되며 복구할 수 없습니다.</strong>
+            </p>
+            
+            <div class="input-group">
+                <label>이메일 확인</label>
+                <input type="email" id="deleteEmail" placeholder="이메일을 입력하세요">
+            </div>
+            
+            <div class="input-group">
+                <label>비밀번호 확인</label>
+                <input type="password" id="deletePassword" placeholder="비밀번호를 입력하세요">
+            </div>
+
+            <div class="input-group">
+                <label>
+                    <input type="checkbox" id="deleteConfirm" style="width: auto; margin-right: 10px;">
+                    정말로 삭제하겠습니다. 이 작업은 되돌릴 수 없습니다.
+                </label>
+            </div>
+
+            <div style="display: flex; gap: 15px; margin-top: 30px;">
+                <button onclick="hideDeleteAccountModal()" style="flex: 1; padding: 15px; background: var(--pale-pink); border: none; border-radius: 20px; font-family: 'Quicksand', sans-serif; font-weight: 600; cursor: pointer; font-size: 1rem; color: var(--text-dark);">
+                    취소
+                </button>
+                <button onclick="deleteAccount()" style="flex: 1; padding: 15px; background: #ff6b6b; border: none; border-radius: 20px; font-family: 'Quicksand', sans-serif; font-weight: 600; cursor: pointer; font-size: 1rem; color: white;">
+                    영구 삭제
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Storage keys
+        const USERS_KEY = 'wellness_users';
+        const CURRENT_USER_KEY = 'wellness_current_user';
+        const LOGS_KEY = 'wellness_logs';
+
+        // -----------------------------
+        // ✅ Cross-device login fix
+        // -----------------------------
+        // This app originally stored accounts in localStorage, which is device-specific.
+        // To make the SAME email/password work on PC + phone, we support Firebase Auth.
+        // 👉 If you fill firebaseConfig below, login/register will use the cloud automatically.
+        //
+        // 1) Create a Firebase project
+        // 2) Enable Authentication > Email/Password
+        // 3) (Optional) Enable Firestore (to store name/profile)
+        // 4) Paste your Firebase config here.
+        //
+        // If firebaseConfig is left as "YOUR_...", the app falls back to localStorage mode.
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBp8nbkzCrIcbyIR7orALgqNIX3MTU2_GQ",
+            authDomain: "wellness-tracker-2026.firebaseapp.com",
+            projectId: "wellness-tracker-2026",
+            storageBucket: "wellness-tracker-2026.firebasestorage.app",
+            messagingSenderId: "521211490792",
+            appId: "1:521211490792:web:902c3d061754c593f6f45d"
+        };
+
+        let cloudEnabled = false;
+        let cloudAuth = null;
+        let cloudDb = null;
+
+        function isFirebaseConfigured() {
+            return firebaseConfig
+                && typeof firebaseConfig.apiKey === 'string'
+                && firebaseConfig.apiKey
+                && !firebaseConfig.apiKey.startsWith('YOUR_')
+                && typeof firebase === 'object'
+                && firebase.apps;
+        }
+
+        function initCloudIfPossible() {
+            try {
+                if (!isFirebaseConfigured()) return false;
+                if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+                cloudAuth = firebase.auth();
+                cloudDb = firebase.firestore();
+                cloudEnabled = true;
+                return true;
+            } catch (e) {
+                console.warn('Firebase init failed. Falling back to localStorage.', e);
+                cloudEnabled = false;
+                cloudAuth = null;
+                cloudDb = null;
+                return false;
+            }
+        }
+
+
+        let currentUser = null;
+        let userLogs = {};
+        let selectedEnergy = 0;
+        let selectedAppetite = 0;
+
+        function getLogsCacheKey() {
+            return (currentUser && currentUser.uid) ? `wellness_logs_cache_${currentUser.uid}` : null;
+        }
+        function cacheLogsLocal() {
+            const k = getLogsCacheKey();
+            if (!k) return;
+            try { localStorage.setItem(k, JSON.stringify(userLogs)); } catch (e) {}
+        }
+        function loadLogsFromCache() {
+            const k = getLogsCacheKey();
+            if (!k) return {};
+            try {
+                const raw = localStorage.getItem(k);
+                return raw ? JSON.parse(raw) : {};
+            } catch (e) {
+                return {};
+            }
+        }
+
+        async function loadLogsFromCloud() {
+            userLogs = {};
+            if (!cloudEnabled || !cloudDb || !currentUser || !currentUser.uid) {
+                userLogs = loadLogsFromCache();
+                return userLogs;
+            }
+            try {
+                const snap = await cloudDb.collection('users').doc(currentUser.uid).collection('logs').get();
+                const obj = {};
+                snap.forEach((d) => { obj[d.id] = d.data(); });
+                userLogs = obj;
+                cacheLogsLocal();
+                return userLogs;
+            } catch (e) {
+                console.warn('Failed to load logs from Firestore. Using cache.', e);
+                userLogs = loadLogsFromCache();
+                return userLogs;
+            }
+        }
+
+        async function saveLogToCloud(docId, data) {
+            userLogs[docId] = data;
+            cacheLogsLocal();
+
+            if (!cloudEnabled || !cloudDb || !currentUser || !currentUser.uid) {
+                return;
+            }
+            try {
+                await cloudDb.collection('users').doc(currentUser.uid).collection('logs').doc(docId).set(data, { merge: true });
+            } catch (e) {
+                console.warn('Failed to save log to Firestore (kept in cache).', e);
+            }
+        }
+
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            checkLogin();
+            setTodayDate();
+        });
+
+        function setTodayDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('dailyDate').value = today;
+            document.getElementById('wellnessDate').value = today;
+        }
+
+        // Form Navigation
+        function showLoginForm() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+        }
+
+        function showRegisterForm() {
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+            // Clear previous inputs
+            document.getElementById('registerName').value = '';
+            document.getElementById('registerEmail').value = '';
+            document.getElementById('registerPassword').value = '';
+            document.getElementById('registerPasswordConfirm').value = '';
+        }
+
+        // Authentication
+        function checkLogin() {
+            // ✅ Try cloud auth first (cross-device)
+            const cloudOk = initCloudIfPossible();
+            if (cloudOk) {
+                cloudAuth.onAuthStateChanged(async (user) => {
+                    if (user) {
+                        let name = null;
+                        try {
+                            const doc = await cloudDb.collection('users').doc(user.uid).get();
+                            if (doc.exists) name = doc.data().name || null;
+                        } catch (e) {
+                            console.warn('Failed to load profile from Firestore:', e);
+                        }
+
+                        currentUser = {
+                            uid: user.uid,
+                            email: user.email,
+                            name: name || (user.email ? user.email.split('@')[0] : 'User')
+                        };
+                        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+                        await loadLogsFromCloud();
+                        showApp();
+                    } else {
+                        localStorage.removeItem(CURRENT_USER_KEY);
+                        currentUser = null;
+                        showLogin();
+                    }
+                });
+                return;
+            }
+
+            // ⬇️ Local fallback (device-specific)
+            const userData = localStorage.getItem(CURRENT_USER_KEY);
+            if (userData) {
+                const user = JSON.parse(userData);
+                currentUser = user;
+                userLogs = loadLogsFromCache();
+                showApp();
+            } else {
+                showLogin();
+            }
+        }
+
+        async function register() {
+            const name = document.getElementById('registerName').value.trim();
+            const email = document.getElementById('registerEmail').value.trim();
+            const password = document.getElementById('registerPassword').value;
+            const passwordConfirm = document.getElementById('registerPasswordConfirm').value;
+
+            // Validation
+            if (!name || !email || !password || !passwordConfirm) {
+                alert('모든 항목을 입력해주세요!');
+                return;
+            }
+
+            if (password.length < 6) {
+                alert('비밀번호는 최소 6자 이상이어야 합니다!');
+                return;
+            }
+
+            if (password !== passwordConfirm) {
+                alert('비밀번호가 일치하지 않습니다!');
+                return;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                alert('올바른 이메일 주소를 입력해주세요!');
+                return;
+            }
+
+            // ✅ Cloud signup (cross-device)
+            const cloudOk = initCloudIfPossible();
+            if (cloudOk) {
+                try {
+                    const cred = await cloudAuth.createUserWithEmailAndPassword(email, password);
+
+                    // Store profile (name)
+                    try {
+                        await cloudDb.collection('users').doc(cred.user.uid).set({
+                            name,
+                            email,
+                            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                        }, { merge: true });
+                    } catch (e) {
+                        console.warn('Failed to write profile to Firestore:', e);
+                    }
+
+                    currentUser = { uid: cred.user.uid, email, name };
+                    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+
+                    alert('✨ 회원가입이 완료되었습니다! (PC/폰 어디서든 같은 계정으로 로그인됩니다)');
+                    showApp();
+                } catch (err) {
+                    if (err.code === 'auth/email-already-in-use') {
+                        alert('이미 가입된 이메일입니다!');
+                    } else if (err.code === 'auth/invalid-email') {
+                        alert('올바른 이메일 주소를 입력해주세요!');
+                    } else if (err.code === 'auth/weak-password') {
+                        alert('비밀번호는 더 강하게 설정해주세요. (최소 6자)');
+                    } else {
+                        alert('회원가입에 실패했습니다: ' + (err.message || err));
+                    }
+                }
+                return;
+            }
+
+            // ⬇️ Local signup fallback (device-specific)
+            const users = JSON.parse(localStorage.getItem(USERS_KEY) || '{}');
+            if (users[email]) {
+                alert('이미 가입된 이메일입니다!');
+                return;
+            }
+
+            users[email] = {
+                name: name,
+                password: password,
+                registeredAt: new Date().toISOString()
+            };
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+
+            alert('✨ 회원가입이 완료되었습니다! 로그인해주세요.');
+            showLoginForm();
+        }
+
+
+        async function login() {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                alert('이메일과 비밀번호를 모두 입력해주세요!');
+                return;
+            }
+
+            // ✅ Cloud login (cross-device)
+            const cloudOk = initCloudIfPossible();
+            if (cloudOk) {
+                try {
+                    const cred = await cloudAuth.signInWithEmailAndPassword(email, password);
+
+                    let name = null;
+                    try {
+                        const doc = await cloudDb.collection('users').doc(cred.user.uid).get();
+                        if (doc.exists) name = doc.data().name || null;
+                    } catch (e) {
+                        console.warn('Failed to load profile from Firestore:', e);
+                    }
+
+                    currentUser = {
+                        uid: cred.user.uid,
+                        email: cred.user.email,
+                        name: name || (cred.user.email ? cred.user.email.split('@')[0] : 'User')
+                    };
+                    localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(currentUser));
+                    await loadLogsFromCloud();
+                    showApp();
+                } catch (err) {
+                    if (err.code === 'auth/user-not-found') {
+                        alert('가입된 이메일이 아닙니다!');
+                    } else if (err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+                        alert('비밀번호가 올바르지 않습니다!');
+                    } else if (err.code === 'auth/too-many-requests') {
+                        alert('로그인 시도가 너무 많습니다. 잠시 후 다시 시도해주세요.');
+                    } else {
+                        alert('로그인에 실패했습니다: ' + (err.message || err));
+                    }
+                }
+                return;
+            }
+
+            // ⛔ 로컬 모드에서는 PC/폰 연동이 불가능합니다.
+            alert('이 버전은 PC/폰 자동 동기화를 위해 Firebase 설정이 필요합니다.\n\n(관리자) firebaseConfig를 채운 뒤 다시 시도해주세요.');
+            return;
+        }
+
+
+        async function logout() {
+            if (!confirm('로그아웃 하시겠습니까?')) return;
+
+            const cloudOk = initCloudIfPossible();
+            if (cloudOk && cloudAuth) {
+                try { await cloudAuth.signOut(); } catch (e) { console.warn(e); }
+            }
+
+            localStorage.removeItem(CURRENT_USER_KEY);
+            currentUser = null;
+            showLogin();
+        }
+
+        function showLogin() {
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('appContainer').style.display = 'none';
+            showLoginForm();
+        }
+
+        function showApp() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('appContainer').style.display = 'block';
+            document.getElementById('userName').textContent = `${currentUser.name}님 안녕하세요! 💖`;
+            loadDailyData();
+            loadWellnessData();
+            loadHistory();
+            loadAccountInfo();
+        }
+
+        // Load account info
+        function loadAccountInfo() {
+            if (currentUser) {
+                document.getElementById('accountName').textContent = currentUser.name;
+                document.getElementById('accountEmail').textContent = currentUser.email;
+            }
+        }
+
+        // Delete Account Modal
+        function showDeleteAccountModal() {
+            document.getElementById('deleteAccountModal').style.display = 'flex';
+            document.getElementById('deleteEmail').value = '';
+            document.getElementById('deletePassword').value = '';
+            document.getElementById('deleteConfirm').checked = false;
+        }
+
+        function hideDeleteAccountModal() {
+            document.getElementById('deleteAccountModal').style.display = 'none';
+        }
+
+        async function deleteAccount() {
+            const email = document.getElementById('deleteEmail').value.trim();
+            const password = document.getElementById('deletePassword').value;
+            const confirmChecked = document.getElementById('deleteConfirm').checked;
+
+            if (!email || !password) {
+                alert('이메일과 비밀번호를 입력해주세요!');
+                return;
+            }
+            if (!confirmChecked) {
+                alert('삭제를 확인하려면 체크박스를 선택해주세요!');
+                return;
+            }
+            if (!currentUser || !currentUser.uid) {
+                alert('로그인이 필요합니다.');
+                return;
+            }
+            if (email !== currentUser.email) {
+                alert('현재 로그인된 이메일과 일치해야 합니다.');
+                return;
+            }
+
+            const cloudOk = initCloudIfPossible();
+            if (!cloudOk) {
+                alert('Firebase 설정이 필요합니다.');
+                return;
+            }
+
+            try {
+                const user = cloudAuth.currentUser;
+                const credential = firebase.auth.EmailAuthProvider.credential(email, password);
+                await user.reauthenticateWithCredential(credential);
+
+                // Delete logs subcollection (client-side loop)
+                const logsRef = cloudDb.collection('users').doc(currentUser.uid).collection('logs');
+                const snap = await logsRef.get();
+                let batch = cloudDb.batch();
+                let opCount = 0;
+
+                snap.forEach((doc) => {
+                    batch.delete(doc.ref);
+                    opCount += 1;
+                    if (opCount >= 450) {
+                        batch.commit();
+                        batch = cloudDb.batch();
+                        opCount = 0;
+                    }
+                });
+                if (opCount > 0) await batch.commit();
+
+                // Delete user profile doc
+                await cloudDb.collection('users').doc(currentUser.uid).delete();
+
+                // Delete auth user
+                await user.delete();
+
+                // Clear cache
+                try {
+                    const k = getLogsCacheKey();
+                    if (k) localStorage.removeItem(k);
+                } catch (e) {}
+                localStorage.removeItem(CURRENT_USER_KEY);
+
+                alert('계정이 완전히 삭제되었습니다. 이용해 주셔서 감사합니다.');
+
+                currentUser = null;
+                userLogs = {};
+                hideDeleteAccountModal();
+                showLogin();
+            } catch (err) {
+                console.warn(err);
+                if (err.code === 'auth/wrong-password') {
+                    alert('비밀번호가 올바르지 않습니다!');
+                } else if (err.code === 'auth/too-many-requests') {
+                    alert('요청이 너무 많습니다. 잠시 후 다시 시도해주세요.');
+                } else if (err.code === 'auth/requires-recent-login') {
+                    alert('보안을 위해 다시 로그인한 후 계정 삭제를 시도해주세요.');
+                } else {
+                    alert('계정 삭제에 실패했습니다: ' + (err.message || err));
+                }
+            }
+        }
+
+        // Cross-device transfer (Export/Import)
+        function exportDataToClipboard() {
+            const payload = {
+                users: JSON.parse(localStorage.getItem(USERS_KEY) || '{}'),
+                logs: JSON.parse(localStorage.getItem(LOGS_KEY) || '{}')
+            };
+            const json = JSON.stringify(payload);
+
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(json)
+                    .then(() => alert('✅ 내 데이터가 클립보드에 복사되었습니다!\n폰에서 설정 > 기기간 데이터 이동 > 가져오기에서 붙여넣어 주세요.'))
+                    .catch(() => {
+                        // Fallback
+                        prompt('복사에 실패했습니다. 아래 내용을 길게 눌러 전체 선택 후 복사하세요:', json);
+                    });
+            } else {
+                // Older browsers fallback
+                prompt('아래 내용을 길게 눌러 전체 선택 후 복사하세요:', json);
+            }
+        }
+
+        function importDataFromPrompt() {
+            const json = prompt('PC에서 복사한 데이터를 여기에 붙여넣으세요:');
+            if (!json) return;
+
+            try {
+                const payload = JSON.parse(json);
+
+                if (payload.users && typeof payload.users === 'object') {
+                    localStorage.setItem(USERS_KEY, JSON.stringify(payload.users));
+                }
+                if (payload.logs && typeof payload.logs === 'object') {
+                    localStorage.setItem(LOGS_KEY, JSON.stringify(payload.logs));
+                }
+
+                alert('✅ 가져오기가 완료되었습니다!\n이제 로그인 화면에서 같은 계정으로 로그인해보세요.');
+                // Go back to login without confirmation
+                localStorage.removeItem(CURRENT_USER_KEY);
+                currentUser = null;
+                showLogin();
+            } catch (e) {
+                alert('❌ 데이터 형식이 올바르지 않습니다. 복사/붙여넣기가 전체로 되었는지 확인해 주세요.');
+            }
+        }
+
+                // Tab Switching
+        function switchTab(tab) {
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.getElementById(tab + 'Tab').classList.add('active');
+
+            if (tab === 'history') {
+                loadHistory();
+            }
+        }
+
+        // Scale Selection
+        function selectScale(type, value) {
+            const scale = document.getElementById(type + 'Scale');
+            scale.querySelectorAll('.scale-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            if (type === 'energy') {
+                selectedEnergy = value;
+            } else if (type === 'appetite') {
+                selectedAppetite = value;
+            }
+        }
+
+        // Get user logs
+        function getUserLogs() {
+            return userLogs || {};
+        }
+
+        function saveUserLogs(logs) {
+            userLogs = logs || {};
+            cacheLogsLocal();
+        }
+
+        // Save Daily Log
+        async function saveDailyLog() {
+            const date = document.getElementById('dailyDate').value;
+            const data = {
+                type: 'daily',
+                date: date,
+                weight: document.getElementById('weight').value,
+                breakfast: document.getElementById('breakfast').value,
+                lunch: document.getElementById('lunch').value,
+                dinner: document.getElementById('dinner').value,
+                snacks: document.getElementById('snacks').value,
+                exercise: document.getElementById('exercise').checked,
+                alcohol: document.getElementById('alcohol').checked,
+                timestamp: new Date().toISOString()
+            };
+
+            const key = date + '_daily';
+            await saveLogToCloud(key, data);
+
+            loadHistory();
+            alert('✨ 일일 기록이 저장되었습니다!');
+        }
+
+        // Save Wellness Log
+        async function saveWellnessLog() {
+            const date = document.getElementById('wellnessDate').value;
+
+            if (selectedEnergy === 0) {
+                alert('에너지 레벨을 선택해주세요!');
+                return;
+            }
+
+            if (selectedAppetite === 0) {
+                alert('식욕 레벨을 선택해주세요!');
+                return;
+            }
+
+            const data = {
+                type: 'wellness',
+                date: date,
+                energyLevel: selectedEnergy,
+                energyReason: document.getElementById('energyReason').value,
+                sleepScore: document.getElementById('sleepScore').value,
+                appetiteLevel: selectedAppetite,
+                waterIntake: document.getElementById('waterIntake').checked,
+                timestamp: new Date().toISOString()
+            };
+
+            const key = date + '_wellness';
+            await saveLogToCloud(key, data);
+
+            loadHistory();
+            alert('✨ 웰니스 기록이 저장되었습니다!');
+        }
+
+        // Load Daily Data
+        function loadDailyData() {
+            const date = document.getElementById('dailyDate').value;
+            const logs = getUserLogs();
+            const data = logs[date + '_daily'];
+
+            if (data) {
+                document.getElementById('weight').value = data.weight || '';
+                document.getElementById('breakfast').value = data.breakfast || '';
+                document.getElementById('lunch').value = data.lunch || '';
+                document.getElementById('dinner').value = data.dinner || '';
+                document.getElementById('snacks').value = data.snacks || '';
+                document.getElementById('exercise').checked = data.exercise || false;
+                document.getElementById('alcohol').checked = data.alcohol || false;
+            } else {
+                // Clear form
+                document.getElementById('weight').value = '';
+                document.getElementById('breakfast').value = '';
+                document.getElementById('lunch').value = '';
+                document.getElementById('dinner').value = '';
+                document.getElementById('snacks').value = '';
+                document.getElementById('exercise').checked = false;
+                document.getElementById('alcohol').checked = false;
+            }
+        }
+
+        // Load Wellness Data
+        function loadWellnessData() {
+            const date = document.getElementById('wellnessDate').value;
+            const logs = getUserLogs();
+            const data = logs[date + '_wellness'];
+
+            // Reset scales
+            document.querySelectorAll('.scale-btn').forEach(btn => btn.classList.remove('active'));
+            selectedEnergy = 0;
+            selectedAppetite = 0;
+
+            if (data) {
+                // Set energy level
+                selectedEnergy = data.energyLevel;
+                const energyBtns = document.getElementById('energyScale').querySelectorAll('.scale-btn');
+                energyBtns[data.energyLevel - 1].classList.add('active');
+
+                // Set appetite level
+                selectedAppetite = data.appetiteLevel;
+                const appetiteBtns = document.getElementById('appetiteScale').querySelectorAll('.scale-btn');
+                appetiteBtns[data.appetiteLevel - 1].classList.add('active');
+
+                document.getElementById('energyReason').value = data.energyReason || '';
+                document.getElementById('sleepScore').value = data.sleepScore || '';
+                document.getElementById('waterIntake').checked = data.waterIntake || false;
+            } else {
+                // Clear form
+                document.getElementById('energyReason').value = '';
+                document.getElementById('sleepScore').value = '';
+                document.getElementById('waterIntake').checked = false;
+            }
+        }
+
+        // Load History
+        function loadHistory() {
+            const logs = getUserLogs();
+            const filterType = document.getElementById('filterType').value;
+            const historyContent = document.getElementById('historyContent');
+
+            // Convert logs object to array and sort by date
+            const logsArray = Object.entries(logs)
+                .filter(([key, value]) => {
+                    if (filterType === 'all') return true;
+                    return value.type === filterType;
+                })
+                .sort((a, b) => new Date(b[1].date) - new Date(a[1].date));
+
+            if (logsArray.length === 0) {
+                historyContent.innerHTML = `
+                    <div class="empty-state">
+                        <h3>📝 아직 기록이 없어요</h3>
+                        <p>첫 번째 기록을 시작해보세요!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            historyContent.innerHTML = logsArray.map(([key, log]) => {
+                const dateObj = new Date(log.date);
+                const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+                const dayName = dayNames[dateObj.getDay()];
+                
+                if (log.type === 'daily') {
+                    return `
+                        <div class="history-card">
+                            <div class="history-header">
+                                <div class="history-date">${log.date} (${dayName})</div>
+                                <button class="delete-btn" onclick="deleteLog('${key}')">삭제</button>
+                            </div>
+                            <div class="history-content">
+                                ${log.weight ? `<div class="history-item"><div class="history-label">몸무게</div><div class="history-value">${log.weight} kg</div></div>` : ''}
+                                ${log.breakfast ? `<div class="history-item"><div class="history-label">아침</div><div class="history-value">${log.breakfast}</div></div>` : ''}
+                                ${log.lunch ? `<div class="history-item"><div class="history-label">점심</div><div class="history-value">${log.lunch}</div></div>` : ''}
+                                ${log.dinner ? `<div class="history-item"><div class="history-label">저녁</div><div class="history-value">${log.dinner}</div></div>` : ''}
+                                ${log.snacks ? `<div class="history-item"><div class="history-label">간식</div><div class="history-value">${log.snacks}</div></div>` : ''}
+                                <div class="history-item"><div class="history-label">운동</div><div class="history-value">${log.exercise ? '✅ 했음' : '❌ 안함'}</div></div>
+                                <div class="history-item"><div class="history-label">음주</div><div class="history-value">${log.alcohol ? '🍷 마심' : '✅ 안마심'}</div></div>
+                            </div>
+                        </div>
+                    `;
+                } else {
+                    return `
+                        <div class="history-card">
+                            <div class="history-header">
+                                <div class="history-date">💖 ${log.date} (${dayName})</div>
+                                <button class="delete-btn" onclick="deleteLog('${key}')">삭제</button>
+                            </div>
+                            <div class="history-content">
+                                <div class="history-item"><div class="history-label">에너지 레벨</div><div class="history-value">⚡ ${log.energyLevel}/5</div></div>
+                                ${log.energyReason ? `<div class="history-item"><div class="history-label">에너지 이유</div><div class="history-value">${log.energyReason}</div></div>` : ''}
+                                ${log.sleepScore ? `<div class="history-item"><div class="history-label">수면 점수</div><div class="history-value">😴 ${log.sleepScore}/10</div></div>` : ''}
+                                <div class="history-item"><div class="history-label">식욕 레벨</div><div class="history-value">🍽️ ${log.appetiteLevel}/5</div></div>
+                                <div class="history-item"><div class="history-label">수분 섭취</div><div class="history-value">${log.waterIntake ? '💧 충분히 마심' : '⚠️ 부족함'}</div></div>
+                            </div>
+                        </div>
+                    `;
+                }
+            }).join('');
+        }
+
+        // Delete Log
+        async function deleteLog(key) {
+            if (!confirm('정말 이 기록을 삭제하시겠습니까?')) return;
+
+            try {
+                delete userLogs[key];
+                cacheLogsLocal();
+
+                if (cloudEnabled && cloudDb && currentUser && currentUser.uid) {
+                    await cloudDb.collection('users').doc(currentUser.uid).collection('logs').doc(key).delete();
+                }
+
+                loadHistory();
+                alert('기록이 삭제되었습니다.');
+            } catch (e) {
+                console.warn('Delete failed:', e);
+                alert('삭제에 실패했습니다. 네트워크 상태를 확인해주세요.');
+            }
+        }
+    </script>
+</body>
+</html>
